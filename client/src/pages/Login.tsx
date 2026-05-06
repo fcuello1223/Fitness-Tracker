@@ -1,6 +1,7 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import {
   AtSignIcon,
   EyeIcon,
@@ -30,7 +31,7 @@ const Login = () => {
     } else {
       await signup({ username, email, password });
     }
-    setIsSubmitting(false)
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const Login = () => {
 
   return (
     <Fragment>
+      <Toaster />
       <main className="login-page-container">
         <form onSubmit={handleSubmit} className="login-form">
           <h2 className="text-3xl font-medium text-gray-900 dark:text-white">
