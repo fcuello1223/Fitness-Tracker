@@ -65,10 +65,10 @@ export const mealTypeOptions = [
 ];
 
 export const quickActivitiesFoodLog = [
-    { name: "breakfast", emoji: "🌮" },
-    { name: "lunch", emoji: "🌅" },
-    { name: "dinner", emoji: "🌙" },
-    { name: "snack", emoji: "🍪" },
+    { name: "Breakfast", emoji: "🌮" },
+    { name: "Lunch", emoji: "🌅" },
+    { name: "Dinner", emoji: "🌙" },
+    { name: "Snack", emoji: "🍪" },
 ];
 
 export const mealColors = {
