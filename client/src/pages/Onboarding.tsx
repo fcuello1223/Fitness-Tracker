@@ -76,8 +76,6 @@ const Onboarding = () => {
     }
   };
 
-  const handleOption = (option: any) => {};
-
   return (
     <Fragment>
       <Toaster />
