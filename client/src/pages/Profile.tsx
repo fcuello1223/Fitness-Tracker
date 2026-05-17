@@ -1,10 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-
-import { useAppContext } from "../context/AppContext";
-import { useTheme } from "../context/ThemeContext";
-
-import type { ProfileFormData, UserData } from "../types";
-import Card from "../components/ui/Card";
+import toast from "react-hot-toast";
 import {
   CalendarIcon,
   LogOutIcon,
@@ -14,12 +9,19 @@ import {
   TargetIcon,
   UserIcon,
 } from "lucide-react";
-import Button from "../components/ui/Button";
+
+import { useAppContext } from "../context/AppContext";
+import { useTheme } from "../context/ThemeContext";
+
+import type { ProfileFormData } from "../types";
+
 import { goalLabels, goalOptions } from "../assets/assets";
+
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
-import mockApi from "../assets/mockApi";
-import toast from "react-hot-toast";
+import api from "../configs/api";
 
 const Profile = () => {
   const { user, logout, fetchUser, allFoodLogs, allActivityLogs } =
@@ -52,11 +54,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const updates: Partial<UserData> = {
-        ...formData,
-        goal: formData.goal as "lose" | "maintain" | "gain",
-      };
-      await mockApi.user.update(user?.id || "", updates);
+      await api.put(`/api/users/${user?.id}`, formData);
       await fetchUser(user?.token || "");
       toast.success("Profile Updated Successfully!");
     } catch (error: any) {

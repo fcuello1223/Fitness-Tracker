@@ -1,12 +1,4 @@
 import { useEffect, useState } from "react";
-
-import { useAppContext } from "../context/AppContext";
-
-import type { ActivityEntry } from "../types";
-
-import Card from "../components/ui/Card";
-
-import { quickActivities } from "../assets/assets";
 import {
   ActivityIcon,
   DumbbellIcon,
@@ -14,10 +6,19 @@ import {
   TimerIcon,
   Trash2Icon,
 } from "lucide-react";
+import toast from "react-hot-toast";
+
+import { useAppContext } from "../context/AppContext";
+
+import type { ActivityEntry } from "../types";
+
+import { quickActivities } from "../assets/assets";
+
+import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
-import toast from "react-hot-toast";
-import mockApi from "../assets/mockApi";
+
+import api from "../configs/api";
 
 const ActivityLog = () => {
   const { allActivityLogs, setAllActivityLogs } = useAppContext();
@@ -61,34 +62,52 @@ const ActivityLog = () => {
     setFormData({ ...formData, duration, calories });
   };
 
+  const handleDelete = async (documentId: string) => {
+    try {
+      const confirm = window.confirm(
+        "Are you sure you want to delete this activity entry?",
+      );
+      if (!confirm) {
+        return;
+      }
+      await api.delete(`/api/activity-logs/${documentId}`);
+      setAllActivityLogs((prev) =>
+        prev.filter((activity) => activity.documentId !== documentId),
+      );
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.response?.data?.error?.message || error?.message);
+    }
+  };
+
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
+
     if (!formData.name.trim() || formData.duration <= 0) {
       return toast("Please Enter Valid Data!");
     }
+
     try {
-      const response = await mockApi.activityLogs.create({ data: formData });
-      setAllActivityLogs((prev) => [...prev, response.data]);
+      const { data } = await api.post("/api/activity-logs", { data: formData });
+      setAllActivityLogs((prev) => [...prev, data]);
       setFormData({ ...formData, duration: 0, calories: 0 });
       setShowForm(false);
     } catch (error: any) {
       console.log(error);
-      toast.error("Failed To ADd Activity");
+      toast.error(error?.response?.data?.message || error?.message);
     }
   };
+
+  const totalMinutes: number = activities.reduce(
+    (sum, activity) => sum + activity.duration,
+    0,
+  );
 
   useEffect(() => {
     (() => {
       loadActivities();
     })();
   }, [allActivityLogs]);
-
-  const handleDelete = async (documentId: string) => {};
-
-  const totalMinutes: number = activities.reduce(
-    (sum, activity) => sum + activity.duration,
-    0,
-  );
 
   return (
     <div className="page-container">
